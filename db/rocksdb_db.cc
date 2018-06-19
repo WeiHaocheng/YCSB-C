@@ -7,20 +7,21 @@ namespace ycsbc{
            std::vector<KVPair> &result) {
 			std::string value;
 			rocksdb::Status s = db_->Get(rocksdb::ReadOptions(), key, &value);
-			result.push_back(value);
+			result.push_back(std::make_pair("", value));
 		return DB::kOK;
 	}
 
 	int RocksDB::Scan(const std::string &table, const std::string &key,
            int len, const std::vector<std::string> *fields,
            std::vector<std::vector<KVPair>> &result) {
-			std::vector<string> values;
+			std::vector<KVPair> values;
 			rocksdb::ReadOptions options;
 			options.tailing =false;
 			rocksdb::Iterator* iter = db_->NewIterator(options);
 			iter->Seek(key);
 			for(size_t i = 0; i < len && iter->Valid(); i++) {
-				values.push_back(iter->value().Encode());
+				//values.push_back(iter->value().Encode());
+				values.push_back(std::make_pair("", iter->value().ToString()));
 			}
 			result.push_back(values);
 		return DB::kOK;

@@ -1,3 +1,4 @@
+#ifndef YCSB_C_ROCKS_DB_H_
 #define YCSB_C_ROCKS_DB_H_
 
 #include "core/db.h"
