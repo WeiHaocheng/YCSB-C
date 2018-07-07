@@ -22,6 +22,7 @@ namespace ycsbc{
 			for(size_t i = 0; i < len && iter->Valid(); i++) {
 				//values.push_back(iter->value().Encode());
 				values.push_back(std::make_pair("", iter->value().ToString()));
+                iter->Next();
 			}
 			result.push_back(values);
 		return DB::kOK;
@@ -30,6 +31,7 @@ namespace ycsbc{
 	int RocksDB::Update(const std::string &table, const std::string &key,
              std::vector<KVPair> &values) {
 
-		rocksdb::Status s = db_->Put(rocksdb::WriteOptions(), key, values[0].second);
+        rocksdb::Status s = db_->Put(rocksdb::WriteOptions(),
+                                     key, values[0].second);
 	}
 }

@@ -15,6 +15,7 @@
 #include "db/tbb_rand_db.h"
 #include "db/tbb_scan_db.h"
 #include "db/rocksdb_db.h"
+#include "db/pmemkv_db.h"
 
 using namespace std;
 using ycsbc::DB;
@@ -41,6 +42,10 @@ DB* DBFactory::CreateDB(utils::Properties &props) {
 //add rocksDB here soon.	
 	else if(props["dbname"]== "rocksdb") {
 		return new RocksDB;
+  }
+//add pmemkv here
+    else if(pros["dbname"]=="pmemkv"){
+        return new PmemKV;
   }
 	else return NULL;
 }
