@@ -3,7 +3,7 @@
 
 
 #include "../core/db.h"
-#include "pmemkv.h"
+#include "libpmemkv.h"
 #include <iostream>
 
 #define LOG(msg) std::cout << msg << "\n"
@@ -11,7 +11,7 @@
 using std::cout;
 using std::endl;
 using namespace pmemkv;
-class KVEngine;
+//class KVEngine;
 
 namespace ycsbc {
 

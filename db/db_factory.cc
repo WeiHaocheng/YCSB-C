@@ -44,7 +44,7 @@ DB* DBFactory::CreateDB(utils::Properties &props) {
 		return new RocksDB;
   }
 //add pmemkv here
-    else if(pros["dbname"]=="pmemkv"){
+    else if(props["dbname"]=="pmemkv"){
         return new PmemKV;
   }
 	else return NULL;

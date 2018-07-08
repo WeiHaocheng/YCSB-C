@@ -8,12 +8,12 @@ PmemKV::~PmemKV()
     delete kv;
 }
 
-PmemkV::PmemKV()
+PmemKV::PmemKV()
 {
     std::string kvPath = "/mnt/pmem/pmemkv";
     std::string kvEngineType = "kvtree2";
     LOG("opening pmemkv database instance");
-    kv = KVEngine::open(kvEngineType,kvPath,PMEMOBJ_MIN_POOL);
+    kv = KVEngine::Open(kvEngineType,kvPath,PMEMOBJ_MIN_POOL);
 }
 
 int PmemKV::Read(const std::string &table, const std::string &key,
