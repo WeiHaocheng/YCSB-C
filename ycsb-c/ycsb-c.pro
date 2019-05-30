@@ -2,6 +2,7 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
+INCLUDEPATH += ../
 
 SOURCES += \
     ../core/core_workload.cc \
@@ -15,8 +16,9 @@ SOURCES += \
     ../redis/hiredis/hiredis.c \
     ../redis/hiredis/net.c \
     ../redis/hiredis/read.c \
-    ../db/pmemkv_db.cc \
-    ../ycsbc.cc
+    #../db/pmemkv_db.cc \
+    ../ycsbc.cc \
+    ../db/leveldb_db.cc
 
 HEADERS += \
     ../core/client.h \
@@ -56,6 +58,7 @@ HEADERS += \
     ../redis/hiredis/adapters/libuv.h \
     ../redis/hiredis/adapters/macosx.h \
     ../redis/hiredis/adapters/qt.h \
-    ../db/pmemkv_db.h
+    #../db/pmemkv_db.h
+    ../db/leveldb_db.h
 
 

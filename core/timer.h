@@ -10,7 +10,6 @@
 #define YCSB_C_TIMER_H_
 
 #include <chrono>
-
 namespace utils {
 
 template <typename T>
@@ -28,8 +27,31 @@ class Timer {
   }
 
  private:
-  typedef std::chrono::high_resolution_clock Clock;
+  //typedef std::chrono::high_resolution_clock Clock;
+  typedef std::chrono::steady_clock Clock;
   typedef std::chrono::duration<T> Duration;
+
+  Clock::time_point time_;
+};
+
+class Timer_us {
+ public:
+  void Start() {
+    time_ = Clock::now();
+  }
+
+  double End() {
+    Duration span;
+    Clock::time_point t = Clock::now();
+    span = std::chrono::duration_cast<Duration>(t - time_);
+    return span.count();
+  }
+
+ private:
+  //typedef std::chrono::high_resolution_clock Clock;
+  typedef std::chrono::steady_clock Clock;
+  typedef std::chrono::duration<double,std::ratio<1,1000000>> Duration;
+
 
   Clock::time_point time_;
 };

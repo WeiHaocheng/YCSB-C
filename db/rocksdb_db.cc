@@ -1,4 +1,4 @@
-#include "rocksdb_db.h"
+#include "db/rocksdb_db.h"
 #include "rocksdb/iterator.h"
 
 namespace ycsbc{
