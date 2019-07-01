@@ -41,7 +41,7 @@ public:
       //return ycsbc::DB::kOK;
 
     void Init(){std::cout<<"initial leveldb......"<<std::endl;}
-    void Close(){}
+    void Close(){std::cout<<"finished leveldb......"<<std::endl;}
 
 
 

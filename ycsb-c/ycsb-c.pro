@@ -3,6 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 INCLUDEPATH += ../
+INCLUDEPATH += ../../LevelDBBuffer/include
 
 SOURCES += \
     ../core/core_workload.cc \

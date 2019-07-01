@@ -96,10 +96,10 @@ void PrintPercentLatency(double* array, double percent)
 //cyf add to get the ops' latency info
 void PrintHistogram()
 {
-    std::cout<<"The Histogram Load Stage:"<<std::endl;
-    std::cout<<"The max load latency: "<<max_loadlatency<<std::endl;
-    std::cout<<"The min load latency: "<<min_loadlatency<<std::endl;
-    std::cout<<"The average load latency: "<< total_loadtime / total_loadnum<<" us"<<std::endl;
+    std::cout<<"The Histogram Load Stage:\t"<<std::endl;
+    std::cout<<"The max load latency:\t"<<max_loadlatency<<std::endl;
+    std::cout<<"The min load latency:\t"<<min_loadlatency<<std::endl;
+    std::cout<<"The average load latency:\t"<< total_loadtime / total_loadnum<<"  us"<<std::endl;
     PrintPercentLatency(load_latency, 0.50);
     PrintPercentLatency(load_latency, 0.90);
     PrintPercentLatency(load_latency, 0.95);
@@ -109,10 +109,10 @@ void PrintHistogram()
 
     std::cout<<"======================================================================"<<std::endl;
 
-    std::cout<<"The Histogram Run Stage:"<<std::endl;
-    std::cout<<"The max Run latency: "<<max_runlatency<<std::endl;
-    std::cout<<"The min Run latency: "<<min_runlatency<<std::endl;
-    std::cout<<"The average Run latency: "<< total_runtime / total_runnum<<" us"<<std::endl;
+    std::cout<<"The Histogram Run Stage:\t"<<std::endl;
+    std::cout<<"The max Run latency:\t"<<max_runlatency<<std::endl;
+    std::cout<<"The min Run latency:\t"<<min_runlatency<<std::endl;
+    std::cout<<"The average Run latency:\t"<< total_runtime / total_runnum<<"  us"<<std::endl;
     PrintPercentLatency(run_latency, 0.50);
     PrintPercentLatency(run_latency, 0.90);
     PrintPercentLatency(run_latency, 0.95);
@@ -281,6 +281,8 @@ int main(const int argc, const char *argv[]) {
   for(int i=0;i<LONG_TAIL_LATENCY;i++)
       printf("load_latency[%d](%f us)\t %f \n",i,BucketLimit[i],run_latency[i]);
       //std::cout<<i<<" load_latency[i]: "<<load_latency[i]<<" run_latency[i]: "<<run_latency[i]<<std::endl;
+
+  delete db;//cyf release memory space
 
 }
 
