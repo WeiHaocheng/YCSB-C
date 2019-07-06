@@ -14,6 +14,7 @@
 #include "core_workload.h"
 
 #include <string>
+#include <iostream>
 
 using ycsbc::CoreWorkload;
 using std::string;
@@ -22,14 +23,13 @@ const string CoreWorkload::TABLENAME_PROPERTY = "table";
 const string CoreWorkload::TABLENAME_DEFAULT = "usertable";
 
 const string CoreWorkload::FIELD_COUNT_PROPERTY = "fieldcount";
-const string CoreWorkload::FIELD_COUNT_DEFAULT = "10";
+const string CoreWorkload::FIELD_COUNT_DEFAULT = "1";//cyf change 10 to 1
 
-const string CoreWorkload::FIELD_LENGTH_DISTRIBUTION_PROPERTY =
-    "field_len_dist";
+const string CoreWorkload::FIELD_LENGTH_DISTRIBUTION_PROPERTY = "field_len_dist";
 const string CoreWorkload::FIELD_LENGTH_DISTRIBUTION_DEFAULT = "constant";
 
 const string CoreWorkload::FIELD_LENGTH_PROPERTY = "fieldlength";
-const string CoreWorkload::FIELD_LENGTH_DEFAULT = "100";
+const string CoreWorkload::FIELD_LENGTH_DEFAULT = "1000";//cyf change 100 to 1000
 
 const string CoreWorkload::READ_ALL_FIELDS_PROPERTY = "readallfields";
 const string CoreWorkload::READ_ALL_FIELDS_DEFAULT = "true";
@@ -171,6 +171,7 @@ ycsbc::Generator<uint64_t> *CoreWorkload::GetFieldLenGenerator(
                                         FIELD_LENGTH_DISTRIBUTION_DEFAULT);
   int field_len = std::stoi(p.GetProperty(FIELD_LENGTH_PROPERTY,
                                           FIELD_LENGTH_DEFAULT));
+  //std::cout<<"cyf field_len_dist: "<<field_len_dist<<"field_len: "<<field_len<<std::endl;
   if(field_len_dist == "constant") {
     return new ConstGenerator(field_len);
   } else if(field_len_dist == "uniform") {
