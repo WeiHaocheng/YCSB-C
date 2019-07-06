@@ -75,7 +75,7 @@ int Level_DB::Insert(const std::string &table, const std::string &key, std::vect
     batch.Clear();
     batch.Put(key,values[0].second);
     //cyf add for value size test
-    std::cout<<" Insert key: "<<key<<" Length: "<<key.size()<<" value size: "<<values[0].second.size()<<std::endl;
+    //std::cout<<" Insert key: "<<key<<" Length: "<<key.size()<<" value size: "<<values[0].second.size()<<std::endl;
     s = db_->Write(options, &batch);
     if(!s.ok()){
         std::cout<<"Level_DB::Insert error:"<<s.ToString()<<std::endl;
