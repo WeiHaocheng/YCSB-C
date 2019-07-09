@@ -59,7 +59,7 @@ const string CoreWorkload::REQUEST_DISTRIBUTION_DEFAULT = "uniform";
 
 const string CoreWorkload::MAX_SCAN_LENGTH_PROPERTY = "maxscanlength";
 //const string CoreWorkload::MAX_SCAN_LENGTH_DEFAULT = "1000";
-const string CoreWorkload::MAX_SCAN_LENGTH_DEFAULT = "100";//cyf modify
+const string CoreWorkload::MAX_SCAN_LENGTH_DEFAULT = "10";//cyf modify
 
 const string CoreWorkload::SCAN_LENGTH_DISTRIBUTION_PROPERTY =
     "scanlengthdistribution";
