@@ -173,10 +173,13 @@ ycsbc::Generator<uint64_t> *CoreWorkload::GetFieldLenGenerator(
                                           FIELD_LENGTH_DEFAULT));
   //std::cout<<"cyf field_len_dist: "<<field_len_dist<<"field_len: "<<field_len<<std::endl;
   if(field_len_dist == "constant") {
+      std::cout<<"cyf field_len_dist: "<<field_len_dist<<std::endl;
     return new ConstGenerator(field_len);
   } else if(field_len_dist == "uniform") {
+      std::cout<<"cyf field_len_dist: "<<field_len_dist<<std::endl;
     return new UniformGenerator(1, field_len);
   } else if(field_len_dist == "zipfian") {
+      std::cout<<"cyf field_len_dist: "<<field_len_dist<<std::endl;
     return new ZipfianGenerator(1, field_len);
   } else {
     throw utils::Exception("Unknown field length distribution: " +

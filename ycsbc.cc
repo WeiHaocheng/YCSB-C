@@ -221,13 +221,14 @@ int main(const int argc, const char *argv[]) {
     int total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     utils::Timer<double> load_timer;
 
-    memset(load_latency,0,sizeof (double)*LONG_TAIL_LATENCY);
-    memset(run_latency,0,sizeof (double)*LONG_TAIL_LATENCY);
+    memset(load_latency, 0 ,sizeof(double) * LONG_TAIL_LATENCY);
+    memset(run_latency, 0 ,sizeof(double) * LONG_TAIL_LATENCY);
 
     load_timer.Start();
     for (int i = 0; i < num_threads; ++i) {
       actual_ops.emplace_back(async(launch::async,
           DelegateClient, db, &wl, total_ops / num_threads, true));
+      std::cout<<"The total load insertion num: "<<total_ops<<std::endl;
     }
     assert((int)actual_ops.size() == num_threads);
 

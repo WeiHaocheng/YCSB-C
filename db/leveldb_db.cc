@@ -13,7 +13,7 @@ Level_DB::Level_DB()
     options.max_file_size = leveldb::Options().max_file_size;
     options.block_cache = nullptr;
     options.compression = leveldb::Options().compression;
-    options.max_open_files = 5000;
+    //options.max_open_files = 5000;
     //options.compression = leveldb::kNoCompression;
 
 
