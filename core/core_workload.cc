@@ -87,6 +87,9 @@ void CoreWorkload::Init(const utils::Properties &p) {
                                                      UPDATE_PROPORTION_DEFAULT));
   double insert_proportion = std::stod(p.GetProperty(INSERT_PROPORTION_PROPERTY,
                                                      INSERT_PROPORTION_DEFAULT));
+
+  if(insert_proportion == 1.0) isOnlyLoadStage_ = true;//cyf add for only load stage model
+
   double scan_proportion = std::stod(p.GetProperty(SCAN_PROPORTION_PROPERTY,
                                                    SCAN_PROPORTION_DEFAULT));
   double readmodifywrite_proportion = std::stod(p.GetProperty(

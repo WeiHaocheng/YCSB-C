@@ -244,40 +244,49 @@ int main(const int argc, const char *argv[]) {
   std::cout << total_ops / load_duration / 1000 << endl;
   //std::cout << (total_ops*1000) / (total_loadtime / 1000000)<< endl;
 
+
+
+  if(!wl.isOnlyLoadStage())
+  {
+      std::cout<<"Not Only Load Stage, finished YCSB Run stage!"<<std::endl;
+      actual_ops.clear();
+      total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
+      utils::Timer<double> timer;
+      timer.Start();
+      for (int i = 0; i < num_threads; ++i) {
+        actual_ops.emplace_back(async(launch::async,
+            DelegateClient, db, &wl, total_ops / num_threads, false));
+      }
+      assert((int)actual_ops.size() == num_threads);
+
+      sum = 0;
+      for (auto &n : actual_ops) {
+        assert(n.valid());
+        sum += n.get();
+      }
+      double duration = timer.End();
+      //cerr << "# Transaction throughput (KTPS)" << endl;
+      //cerr << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
+      //cerr << total_ops / duration / 1000 << endl;
+
+      std::cout << "# Transaction throughput (KTPS)" << endl;
+      std::cout <<"Run_stage: "<< props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
+                << total_ops / duration / 1000 << endl;
+
+
+  }
+
   // Peforms transactions
-  actual_ops.clear();
-  total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
-  utils::Timer<double> timer;
-  timer.Start();
-  for (int i = 0; i < num_threads; ++i) {
-    actual_ops.emplace_back(async(launch::async,
-        DelegateClient, db, &wl, total_ops / num_threads, false));
-  }
-  assert((int)actual_ops.size() == num_threads);
 
-  sum = 0;
-  for (auto &n : actual_ops) {
-    assert(n.valid());
-    sum += n.get();
-  }
-  double duration = timer.End();
-  //cerr << "# Transaction throughput (KTPS)" << endl;
-  //cerr << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
-  //cerr << total_ops / duration / 1000 << endl;
-
-  std::cout << "# Transaction throughput (KTPS)" << endl;
-  std::cout <<"Run_stage: "<< props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
-            << total_ops / duration / 1000 << endl;
-  //std::cout << (total_ops*1000) / (total_runtime / 1000000)<< endl;
 
   PrintHistogram();
   std::cout<<"total_loadnum:"<<total_loadnum<<" total_loadtime:"<<total_loadtime
           <<" total_runnum:"<<total_runnum<<" total_runtime:"<<total_runtime<<std::endl;
-  std::cout<<"============================Load Latency Statistic========================"<<std::endl;
+  //std::cout<<"============================Load Latency Statistic========================"<<std::endl;
   //for(int i=0;i<LONG_TAIL_LATENCY;i++)
   //    printf("load_latency[%d](%f us)\t %f \n",i,BucketLimit[i],load_latency[i]);
 
-  std::cout<<"============================Run Latency Statistic========================"<<std::endl;
+  std::cout<<"============================Run Latency Statistic========================\t"<<file_name<<std::endl;
 
   //for(int i=0;i<LONG_TAIL_LATENCY;i++)
   //    printf("load_latency[%d](%f us)\t %f \n",i,BucketLimit[i],run_latency[i]);
