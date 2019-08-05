@@ -216,7 +216,7 @@ int main(const int argc, const char *argv[]) {
 
   const int num_threads = stoi(props.GetProperty("threadcount", "1"));
 
-    // Loads data
+    // Loads data da
     vector<future<int>> actual_ops;
     int total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     utils::Timer<double> load_timer;

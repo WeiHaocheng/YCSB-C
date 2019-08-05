@@ -62,4 +62,7 @@ HEADERS += \
     #../db/pmemkv_db.h
     ../db/leveldb_db.h
 
+DISTFILES += \
+    ../Makefile
+
 
