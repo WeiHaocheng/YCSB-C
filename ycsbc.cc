@@ -18,7 +18,7 @@
 #include "db/db_factory.h"
 
 #include <stdio.h>
-
+#include <ctime>//cyf add for judge LOAD and RUN stages' starting time
 //cyf add the value should not be modified
 #define LONG_TAIL_LATENCY 154
 
@@ -224,6 +224,9 @@ int main(const int argc, const char *argv[]) {
     memset(load_latency, 0 ,sizeof(double) * LONG_TAIL_LATENCY);
     memset(run_latency, 0 ,sizeof(double) * LONG_TAIL_LATENCY);
 
+    time_t load_now = time(0);
+    std::string load_time = ctime(&load_now);
+    std::cout << "Load stage start time: "<<load_time<< std::endl;
     load_timer.Start();
     for (int i = 0; i < num_threads; ++i) {
       actual_ops.emplace_back(async(launch::async,
@@ -248,7 +251,10 @@ int main(const int argc, const char *argv[]) {
 
   if(!wl.isOnlyLoadStage())
   {
-      std::cout<<"Not Only Load Stage, finished YCSB Run stage!"<<std::endl;
+      std::cout<<"Not Only Load Stage, starting YCSB Run stage!"<<std::endl;
+      time_t run_now = time(0);
+      string run_time = ctime(&run_now);
+      std::cout << "Load stage start time: "<<run_time<< std::endl;
       actual_ops.clear();
       total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
       utils::Timer<double> timer;
