@@ -16,7 +16,7 @@
 #include "core/client.h"
 #include "core/core_workload.h"
 #include "db/db_factory.h"
-
+#include <unistd.h>
 #include <stdio.h>
 #include <ctime>//cyf add for judge LOAD and RUN stages' starting time
 //cyf add the value should not be modified
@@ -247,7 +247,7 @@ int main(const int argc, const char *argv[]) {
   std::cout << total_ops / load_duration / 1000 << endl;
   //std::cout << (total_ops*1000) / (total_loadtime / 1000000)<< endl;
 
-
+    sleep(10);//wait 10second for background compaction finished
 
   if(!wl.isOnlyLoadStage())
   {
