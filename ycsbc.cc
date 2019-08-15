@@ -247,7 +247,7 @@ int main(const int argc, const char *argv[]) {
   std::cout << total_ops / load_duration / 1000 << endl;
   //std::cout << (total_ops*1000) / (total_loadtime / 1000000)<< endl;
 
-    sleep(10);//wait 10second for background compaction finished
+    sleep(100);//wait 10second for background compaction finished
 
   if(!wl.isOnlyLoadStage())
   {
@@ -279,6 +279,7 @@ int main(const int argc, const char *argv[]) {
       std::cout <<"Run_stage: "<< props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
                 << total_ops / duration / 1000 << endl;
 
+      sleep(100);//wait Run stage's background compaction completed
 
   }
 
