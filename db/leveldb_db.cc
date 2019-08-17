@@ -33,6 +33,7 @@ int Level_DB::Read(const std::string &table, const std::string &key,
     std::string value;
     leveldb::Status s = db_->Get(options, key, &value);
     if(!s.ok()) std::cout<<"Read Not Found: "<<key <<s.ToString()<<std::endl;
+    if(value.size() < 1000) std::cout <<"Unormal value: "<<value <<std::endl;
     result.push_back(std::make_pair(key, value));
     return DB::kOK;
 }
