@@ -247,7 +247,7 @@ int main(const int argc, const char *argv[]) {
   std::cout << total_ops / load_duration / 1000 << endl;
   //std::cout << (total_ops*1000) / (total_loadtime / 1000000)<< endl;
 
-    sleep(100);//wait 10second for background compaction finished
+    //sleep(100);//wait 10second for background compaction finished
 
   if(!wl.isOnlyLoadStage())
   {
