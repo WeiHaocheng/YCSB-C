@@ -74,7 +74,7 @@ int Level_DB::Insert(const std::string &table, const std::string &key, std::vect
     leveldb::WriteBatch batch;
     leveldb::Status s;
     leveldb::WriteOptions options;
-    batch.Clear();
+    //batch.Clear();
     batch.Put(key,values[0].second);
     //cyf add for value size test
     //std::cout<<" Insert key: "<<key<<" Length: "<<key.size()<<" value size: "<<values[0].second.size()<<std::endl;
