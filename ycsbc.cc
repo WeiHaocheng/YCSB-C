@@ -21,6 +21,7 @@
 #include <ctime>//cyf add for judge LOAD and RUN stages' starting time
 //cyf add the value should not be modified
 #define LONG_TAIL_LATENCY 154
+#define ABS_WOKLOAD_PATH "/lab505/cyf/YCSB_TAIL_LATENCY/workloads_LDC_ori/workload"
 
 //cyf copy from leveldb for stats tail latency
 static const double BucketLimit[LONG_TAIL_LATENCY] = {
@@ -125,7 +126,7 @@ void PrintHistogram()
 
 void UsageMessage(const char *command);
 bool StrStartWith(const char *str, const char *pre);
-string ParseCommandLine(int argc, const char *argv[], utils::Properties &props);
+string ParseCommandLine(int argc, const char *argv[], std::vector<utils::Properties> &props);
 
 //cyf add latency info into latency array
 void AddLatencyToArray(double latency, double* array,int current_ops)
@@ -202,23 +203,31 @@ int DelegateClient(ycsbc::DB *db, ycsbc::CoreWorkload *wl, const int num_ops,
 
 
 int main(const int argc, const char *argv[]) {
-  utils::Properties props;
-  string file_name = ParseCommandLine(argc, argv, props);
+  utils::Properties proper_first;
+  std::vector<utils::Properties> props_set;
+  props_set.push_back(proper_first);
+  string file_name = ParseCommandLine(argc, argv, props_set);
 
-  ycsbc::DB *db = ycsbc::DBFactory::CreateDB(props);
+  ycsbc::DB *db = ycsbc::DBFactory::CreateDB(props_set[0]);
   if (!db) {
-    cout << "Unknown database name " << props["dbname"] << endl;
+    cout << "Unknown database name " << props_set[0]["dbname"] << endl;
     exit(0);
   }
 
-  ycsbc::CoreWorkload wl;
-  wl.Init(props);
+  std::vector<ycsbc::CoreWorkload> wl_set;
+  for (size_t i = 0;i< props_set.size(); i++) {
+      ycsbc::CoreWorkload wl;
+      wl.Init(props_set[i]);
+      wl_set.push_back(wl);
 
-  const int num_threads = stoi(props.GetProperty("threadcount", "1"));
+  }
 
-    // Loads data da
+
+  const int num_threads = stoi(props_set[0].GetProperty("threadcount", "1"));
+
+    // Loads data
     vector<future<int>> actual_ops;
-    int total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
+    int total_ops = stoi(props_set[0][ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     utils::Timer<double> load_timer;
 
     memset(load_latency, 0 ,sizeof(double) * LONG_TAIL_LATENCY);
@@ -230,7 +239,7 @@ int main(const int argc, const char *argv[]) {
     load_timer.Start();
     for (int i = 0; i < num_threads; ++i) {
       actual_ops.emplace_back(async(launch::async,
-          DelegateClient, db, &wl, total_ops / num_threads, true));
+          DelegateClient, db, &wl_set[0], total_ops / num_threads, true));
       std::cout<<"The total load insertion num: "<<total_ops<<std::endl;
     }
     assert((int)actual_ops.size() == num_threads);
@@ -243,32 +252,36 @@ int main(const int argc, const char *argv[]) {
   double load_duration = load_timer.End();
   std::cout << "# Loading records:\t" << sum << endl;
   std::cout << "# Transaction throughput (KTPS)" << endl;
-  std::cout <<"Load_stage: "<< props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
+  std::cout <<"Load_stage: "<< props_set[0]["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
   std::cout << total_ops / load_duration / 1000 << endl;
   //std::cout << (total_ops*1000) / (total_loadtime / 1000000)<< endl;
 
     //sleep(100);//wait 10second for background compaction finished
 
-  if(!wl.isOnlyLoadStage())
+  if(!wl_set[0].isOnlyLoadStage())
   {
       std::cout<<"Not Only Load Stage, starting YCSB Run stage!"<<std::endl;
       time_t run_now = time(0);
       string run_time = ctime(&run_now);
       std::cout << "Load stage start time: "<<run_time<< std::endl;
       actual_ops.clear();
-      total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
+      total_ops = stoi(props_set[0][ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
       utils::Timer<double> timer;
       timer.Start();
-      for (int i = 0; i < num_threads; ++i) {
-        actual_ops.emplace_back(async(launch::async,
-            DelegateClient, db, &wl, total_ops / num_threads, false));
-      }
-      assert((int)actual_ops.size() == num_threads);
+      for(size_t j=0; j<wl_set.size(); j++){
+          assert(wl_set.size() > 0);
+            for (int i = 0; i < num_threads; ++i) {
+                actual_ops.emplace_back(async(launch::async,
+                    DelegateClient, db, &wl_set[j], total_ops / num_threads, false));
+            }
+            assert((int)actual_ops.size() == num_threads);
 
-      sum = 0;
-      for (auto &n : actual_ops) {
-        assert(n.valid());
-        sum += n.get();
+            sum = 0;
+            for (auto &n : actual_ops) {
+                assert(n.valid());
+                sum += n.get();
+            }
+            actual_ops.clear();
       }
       double duration = timer.End();
       //cerr << "# Transaction throughput (KTPS)" << endl;
@@ -276,14 +289,13 @@ int main(const int argc, const char *argv[]) {
       //cerr << total_ops / duration / 1000 << endl;
 
       std::cout << "# Transaction throughput (KTPS)" << endl;
-      std::cout <<"Run_stage: "<< props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
+      std::cout <<"Run_stage: "<< props_set[0]["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
                 << total_ops / duration / 1000 << endl;
 
       //sleep(100);//wait Run stage's background compaction completed
 
   }
 
-  // Peforms transactions
 
 
   PrintHistogram();
@@ -303,7 +315,7 @@ int main(const int argc, const char *argv[]) {
 
 }
 
-std::string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) {
+std::string ParseCommandLine(int argc, const char *argv[], std::vector<utils::Properties> &props) {
   int argindex = 1;
   string filename;
   while (argindex < argc && StrStartWith(argv[argindex], "-")) {
@@ -313,7 +325,7 @@ std::string ParseCommandLine(int argc, const char *argv[], utils::Properties &pr
         UsageMessage(argv[0]);
         exit(0);
       }
-      props.SetProperty("threadcount", argv[argindex]);
+      props[0].SetProperty("threadcount", argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-db") == 0) {
       argindex++;
@@ -321,7 +333,7 @@ std::string ParseCommandLine(int argc, const char *argv[], utils::Properties &pr
         UsageMessage(argv[0]);
         exit(0);
       }
-      props.SetProperty("dbname", argv[argindex]);
+      props[0].SetProperty("dbname", argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-host") == 0) {
       argindex++;
@@ -329,7 +341,7 @@ std::string ParseCommandLine(int argc, const char *argv[], utils::Properties &pr
         UsageMessage(argv[0]);
         exit(0);
       }
-      props.SetProperty("host", argv[argindex]);
+      props[0].SetProperty("host", argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-port") == 0) {
       argindex++;
@@ -337,7 +349,7 @@ std::string ParseCommandLine(int argc, const char *argv[], utils::Properties &pr
         UsageMessage(argv[0]);
         exit(0);
       }
-      props.SetProperty("port", argv[argindex]);
+      props[0].SetProperty("port", argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-slaves") == 0) {
       argindex++;
@@ -345,7 +357,7 @@ std::string ParseCommandLine(int argc, const char *argv[], utils::Properties &pr
         UsageMessage(argv[0]);
         exit(0);
       }
-      props.SetProperty("slaves", argv[argindex]);
+      props[0].SetProperty("slaves", argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-P") == 0) {
       argindex++;
@@ -356,14 +368,45 @@ std::string ParseCommandLine(int argc, const char *argv[], utils::Properties &pr
       filename.assign(argv[argindex]);
       ifstream input(argv[argindex]);
       try {
-        props.Load(input);
+        props[0].Load(input);
       } catch (const string &message) {
         cout << message << endl;
         exit(0);
       }
       input.close();
       argindex++;
-    } else {
+    } else if(strcmp(argv[argindex], "-S") == 0){
+      //cyf add for hybrid workloads like a,c,b,d,f,e and so on.
+      argindex++;
+      std::string wls = argv[argindex];
+      std::string abs_wl_path = ABS_WOKLOAD_PATH;    
+      ifstream input_0(abs_wl_path + wls[0] + ".spec");
+      try {
+        props[0].Load(input_0);
+      } catch (const string &message) {
+        cout << message << endl;
+        exit(0);
+      }
+      input_0.close();
+
+      for (size_t i = 1; i < wls.size(); i++) {
+          utils::Properties p;
+          ifstream in(abs_wl_path + wls[i] + ".spec");
+          try {
+            std::cout << "the hybrid workloads: " << abs_wl_path + wls[i] + ".spec" <<std::endl;
+            p.Load(in);
+          } catch (const string &message) {
+            cout << message << endl;
+            exit(0);
+          }
+          in.close();
+          props.push_back(p);
+      }//end for (size_t i = 1;i < wls.size(); i++)
+
+      filename = abs_wl_path + argv[argindex] + ".spec";
+      argindex++;
+
+    }else {
       cout << "Unknown option '" << argv[argindex] << "'" << endl;
       exit(0);
     }
@@ -384,6 +427,7 @@ void UsageMessage(const char *command) {
   cout << "  -db dbname: specify the name of the DB to use (default: basic)" << endl;
   cout << "  -P propertyfile: load properties from the given file. Multiple files can" << endl;
   cout << "                   be specified, and will be processed in the order specified" << endl;
+  cout << "  -S hybrid propertyfiles: l '-S abcdef' , means run workload a-f sequentially" << endl;
 }
 
 inline bool StrStartWith(const char *str, const char *pre) {
