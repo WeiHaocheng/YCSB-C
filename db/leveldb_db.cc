@@ -46,8 +46,10 @@ int Level_DB::Scan(const std::string &table, const std::string &key,
     leveldb::ReadOptions options;
     //Sint scan_num =0;
     //options.tailing =false;
+    std::string value;
     leveldb::Iterator* iter = db_->NewIterator(options);
     iter->Seek(key);
+    db_->setScanNum(len);//cyf ugly method for Scan operation statistic, change later.
     for(size_t i = 0; i < len && iter->Valid(); i++) {
         //values.push_back(iter->value().Encode());
         //scan_num++;
