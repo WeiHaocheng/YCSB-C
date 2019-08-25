@@ -384,6 +384,7 @@ std::string ParseCommandLine(int argc, const char *argv[], std::vector<utils::Pr
       std::string abs_wl_path = ABS_WOKLOAD_PATH;    
       ifstream input_0(abs_wl_path + wls[0] + ".spec");
       try {
+        std::cout << "the hybrid workloads: " << abs_wl_path + wls[0] + ".spec" <<std::endl;
         props[0].Load(input_0);
       } catch (const string &message) {
         cout << message << endl;
