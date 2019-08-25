@@ -22,6 +22,7 @@
 //cyf add the value should not be modified
 #define LONG_TAIL_LATENCY 154
 #define ABS_WOKLOAD_PATH "/lab505/cyf/YCSB_TAIL_LATENCY/workloads_LDC_ori/workload"
+#define WORKLOAD_MAX_NUM 10
 
 //cyf copy from leveldb for stats tail latency
 static const double BucketLimit[LONG_TAIL_LATENCY] = {
@@ -214,11 +215,12 @@ int main(const int argc, const char *argv[]) {
     exit(0);
   }
 
-  std::vector<ycsbc::CoreWorkload> wl_set;
+  //std::vector<ycsbc::CoreWorkload> wl_set;
+  ycsbc::CoreWorkload wl_set[WORKLOAD_MAX_NUM];
   for (size_t i = 0;i< props_set.size(); i++) {
-      ycsbc::CoreWorkload wl;
-      wl.Init(props_set[i]);
-      wl_set.push_back(wl);
+      //ycsbc::CoreWorkload wl;
+      wl_set[i].Init(props_set[i]);
+      //wl_set.push_back(wl);
 
   }
 
@@ -268,8 +270,8 @@ int main(const int argc, const char *argv[]) {
       total_ops = stoi(props_set[0][ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
       utils::Timer<double> timer;
       timer.Start();
-      for(size_t j=0; j<wl_set.size(); j++){
-          assert(wl_set.size() > 0);
+      for(size_t j=0; j<props_set.size(); j++){
+          assert(props_set.size() > 0);
             for (int i = 0; i < num_threads; ++i) {
                 actual_ops.emplace_back(async(launch::async,
                     DelegateClient, db, &wl_set[j], total_ops / num_threads, false));
