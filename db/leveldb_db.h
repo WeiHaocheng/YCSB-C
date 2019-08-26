@@ -40,7 +40,10 @@ public:
     int Delete(const std::string &table, const std::string &key);
       //return ycsbc::DB::kOK;
 
-    void Init(){std::cout<<"initial leveldb......"<<std::endl;}
+    void Init(){
+        std::cout<<"initial leveldb......"<<std::endl;
+        db_->resetLDCRatio();
+               }
     void Close(){std::cout<<"finished leveldb......"<<std::endl;}
 
 
