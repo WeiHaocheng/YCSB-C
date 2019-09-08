@@ -292,7 +292,7 @@ int main(const int argc, const char *argv[]) {
 
       std::cout << "# Transaction throughput (KTPS)" << endl;
       std::cout <<"Run_stage: "<< props_set[0]["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
-                << total_ops / duration / 1000 << endl;
+                << (props_set.size() * total_ops) / (duration * 1000) << endl;
 
       //sleep(100);//wait Run stage's background compaction completed
 
