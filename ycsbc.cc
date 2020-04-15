@@ -286,9 +286,7 @@ int main(const int argc, const char *argv[]) {
             actual_ops.clear();
       }
       double duration = timer.End();
-      //cerr << "# Transaction throughput (KTPS)" << endl;
-      //cerr << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
-      //cerr << total_ops / duration / 1000 << endl;
+
 
       std::cout << "# Transaction throughput (KTPS)" << endl;
       std::cout <<"Run_stage: "<< props_set[0]["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
@@ -303,15 +301,10 @@ int main(const int argc, const char *argv[]) {
   PrintHistogram();
   std::cout<<"total_loadnum:"<<total_loadnum<<" total_loadtime:"<<total_loadtime
           <<" total_runnum:"<<total_runnum<<" total_runtime:"<<total_runtime<<std::endl;
-  //std::cout<<"============================Load Latency Statistic========================"<<std::endl;
-  //for(int i=0;i<LONG_TAIL_LATENCY;i++)
-  //    printf("load_latency[%d](%f us)\t %f \n",i,BucketLimit[i],load_latency[i]);
+
 
   std::cout<<"============================Run Latency Statistic========================\t"<<file_name<<std::endl;
 
-  //for(int i=0;i<LONG_TAIL_LATENCY;i++)
-  //    printf("load_latency[%d](%f us)\t %f \n",i,BucketLimit[i],run_latency[i]);
-      //std::cout<<i<<" load_latency[i]: "<<load_latency[i]<<" run_latency[i]: "<<run_latency[i]<<std::endl;
 
   delete db;//cyf release memory space
 
