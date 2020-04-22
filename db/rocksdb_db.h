@@ -16,17 +16,9 @@ namespace ycsbc {
 
 class RocksDB : public DB {
  public:
-  RocksDB() {
-    std::string kDBPath = "/mnt/ssd/ldb_2pc";
-    rocksdb::Options options; 
-    options.create_if_missing = true;
-    rocksdb::Status s = rocksdb::DB::Open(options ,kDBPath ,&db_);
-    assert(s.ok());
-  }
+  RocksDB();
 
-  ~RocksDB() {
-    delete db_;
-  }
+  ~RocksDB();
 
   int Read(const std::string &table, const std::string &key,
            const std::vector<std::string> *fields,

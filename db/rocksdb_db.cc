@@ -2,7 +2,34 @@
 #include "rocksdb/iterator.h"
 
 namespace ycsbc{
-	int RocksDB::Read(const std::string &table, const std::string &key,
+
+RocksDB::RocksDB()
+{
+
+        std::string kDBPath = "/mnt/ssd/ldb_2pc";
+        rocksdb::Options options;
+        options.write_buffer_size  = 4 << 20;//cyf :4MB Memtable
+        options.max_bytes_for_level_base = 8 <<20;//default LDB's SSTable is 2MB * 4
+        options.max_open_files  = 1000;
+        options.max_file_opening_threads = 1;
+        options.max_background_jobs = 1;
+        options.level0_slowdown_writes_trigger = 8;
+        options.level0_stop_writes_trigger = 12;
+        options.level0_file_num_compaction_trigger = 4;
+
+        options.create_if_missing = true;
+        rocksdb::Status s = rocksdb::DB::Open(options ,kDBPath ,&db_);
+        assert(s.ok());
+
+}
+
+RocksDB::~RocksDB()
+{
+    delete db_;
+
+}
+
+int RocksDB::Read(const std::string &table, const std::string &key,
            const std::vector<std::string> *fields,
            std::vector<KVPair> &result) {
 			std::string value;
