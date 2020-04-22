@@ -33,5 +33,12 @@ namespace ycsbc{
 
         rocksdb::Status s = db_->Put(rocksdb::WriteOptions(),
                                      key, values[0].second);
-	}
+        return DB::kOK;
+    }
+
+    int RocksDB::Delete(const std::string &table, const std::string &key)
+    {
+        rocksdb::Status s = db_->Delete(rocksdb::WriteOptions(),key);
+        return DB::kOK;
+    }
 }

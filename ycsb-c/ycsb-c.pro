@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 INCLUDEPATH += ../
 INCLUDEPATH += ../../LevelDBBuffer/include
+INCLUDEPATH += ../../rocksdb/include
 
 SOURCES += \
     ../core/core_workload.cc \
