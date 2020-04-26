@@ -1,5 +1,7 @@
 #include "db/rocksdb_db.h"
 #include "rocksdb/iterator.h"
+#include "rocksdb/table.h"
+#include "rocksdb/filter_policy.h"
 
 namespace ycsbc{
 
@@ -16,6 +18,17 @@ RocksDB::RocksDB()
         options.level0_slowdown_writes_trigger = 8;
         options.level0_stop_writes_trigger = 12;
         options.level0_file_num_compaction_trigger = 4;
+        options.max_write_buffer_number = 1;
+        //cyf add for change bloomfilter
+        rocksdb::BlockBasedTableOptions table_options;
+        table_options.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10,true));//set true for the same as LevelDB
+        options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
+        //cyf add for select comapction mechanism
+        options.compaction_style = rocksdb::kCompactionStyleLevel;
+        //options.compaction_style = rocksdb::kCompactionStyleUniversal;
+
+
+
 
         options.create_if_missing = true;
         rocksdb::Status s = rocksdb::DB::Open(options ,kDBPath ,&db_);
