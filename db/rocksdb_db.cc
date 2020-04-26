@@ -10,6 +10,8 @@ RocksDB::RocksDB()
 
         std::string kDBPath = "/mnt/ssd/ldb_2pc";
         rocksdb::Options options;
+        options.target_file_size_base = 2 << 20;
+        options.target_file_size_multiplier = 1;
         options.write_buffer_size  = 4 << 20;//cyf :4MB Memtable
         options.max_bytes_for_level_base = 8 <<20;//default LDB's SSTable is 2MB * 4
         options.max_open_files  = 1000;
@@ -18,14 +20,21 @@ RocksDB::RocksDB()
         options.level0_slowdown_writes_trigger = 8;
         options.level0_stop_writes_trigger = 12;
         options.level0_file_num_compaction_trigger = 4;
-        options.max_write_buffer_number = 1;
+        options.max_write_buffer_number = 2;
+        options.min_write_buffer_number_to_merge = 1;
+        options.compression = rocksdb::kSnappyCompression;
         //cyf add for change bloomfilter
         rocksdb::BlockBasedTableOptions table_options;
         table_options.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10,true));//set true for the same as LevelDB
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
         //cyf add for select comapction mechanism
+        options.target_file_size_base = options.max_bytes_for_level_base/4;
+
+        for(auto iter = options.compression_per_level.begin();iter != options.compression_per_level.end();iter++)
+            *iter = rocksdb::kSnappyCompression;
         options.compaction_style = rocksdb::kCompactionStyleLevel;
         //options.compaction_style = rocksdb::kCompactionStyleUniversal;
+
 
 
 
