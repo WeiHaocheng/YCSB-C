@@ -10,10 +10,10 @@ RocksDB::RocksDB()
 
         std::string kDBPath = "/mnt/ssd/ldb_2pc";
         rocksdb::Options options;
-        options.target_file_size_base = 2 << 20;
+        options.target_file_size_base = 4 << 20;
         options.target_file_size_multiplier = 1;
-        options.write_buffer_size  = 4 << 20;//cyf :4MB Memtable
-        options.max_bytes_for_level_base = 8 <<20;//default LDB's SSTable is 2MB * 4
+        options.write_buffer_size  = 2* options.target_file_size_base;//cyf : Memtable is 2 times larger than SST
+        options.max_bytes_for_level_base = 4 * options.target_file_size_base;//default LDB's SSTable is 4MB * 4
         options.max_open_files  = 1000;
         options.max_file_opening_threads = 1;
         options.max_background_jobs = 1;
