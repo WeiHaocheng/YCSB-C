@@ -49,7 +49,7 @@ int Level_DB::Scan(const std::string &table, const std::string &key,
     std::string value;
     leveldb::Iterator* iter = db_->NewIterator(options);
     iter->Seek(key);
-    db_->setScanNum(1);//cyf ugly method for Scan operation statistic, change later.
+    //db_->setScanNum(1);//cyf ugly method for Scan operation statistic, change later.
     //cyf 1 scan op may cotains more key serarch ops, we want to get the TKPS
     for(size_t i = 0; i < len && iter->Valid(); i++) {
         //values.push_back(iter->value().Encode());
