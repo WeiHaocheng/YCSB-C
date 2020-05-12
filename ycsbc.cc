@@ -259,8 +259,10 @@ int main(const int argc, const char *argv[]) {
   std::cout <<"Load_stage: "<< props_set[0]["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
   std::cout << total_ops / load_duration / 1000 << endl;
 
+  /*
   TOTAL_OPS_INCLUDE_LOAD_AND_RUN += total_ops;
   TOTAL_TIME_INCLUDE_LOAD_AND_RUN += load_duration;
+  */
 
   //std::cout << (total_ops*1000) / (total_loadtime / 1000000)<< endl;
 
@@ -298,16 +300,19 @@ int main(const int argc, const char *argv[]) {
       std::cout <<"Run_stage: "<< props_set[0]["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
                 << (props_set.size() * total_ops) / (duration * 1000) << endl;
 
-      TOTAL_OPS_INCLUDE_LOAD_AND_RUN =
+      /*
+       TOTAL_OPS_INCLUDE_LOAD_AND_RUN =
               TOTAL_OPS_INCLUDE_LOAD_AND_RUN + (props_set.size() * total_ops);
       TOTAL_TIME_INCLUDE_LOAD_AND_RUN += duration;
+      */
 
       //sleep(100);//wait Run stage's background compaction completed
 
   }
-        std::cout<<"The TOTAL KTPS(average KTPS = (Load + Run)'s ops / TOTAL_TIME): "
+       /* std::cout<<"The TOTAL KTPS(average KTPS = (Load + Run)'s ops / TOTAL_TIME): "
                 << TOTAL_OPS_INCLUDE_LOAD_AND_RUN / (TOTAL_TIME_INCLUDE_LOAD_AND_RUN * 1000)
                 <<std::endl;
+                */
 
 
   PrintHistogram();
