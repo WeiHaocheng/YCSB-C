@@ -208,8 +208,8 @@ int main(const int argc, const char *argv[]) {
   std::vector<utils::Properties> props_set;
   props_set.push_back(proper_first);
   string file_name = ParseCommandLine(argc, argv, props_set);
-  uint64_t TOTAL_OPS_INCLUDE_LOAD_AND_RUN = 0;
-  double   TOTAL_TIME_INCLUDE_LOAD_AND_RUN = 0;
+  //uint64_t TOTAL_OPS_INCLUDE_LOAD_AND_RUN = 0;
+  //double   TOTAL_TIME_INCLUDE_LOAD_AND_RUN = 0;
 
   ycsbc::DB *db = ycsbc::DBFactory::CreateDB(props_set[0]);
   if (!db) {
