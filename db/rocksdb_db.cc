@@ -2,6 +2,7 @@
 #include "rocksdb/iterator.h"
 #include "rocksdb/table.h"
 #include "rocksdb/filter_policy.h"
+#include "rocksdb/rate_limiter.h"
 
 namespace ycsbc{
 
@@ -34,6 +35,19 @@ RocksDB::RocksDB()
             *iter = rocksdb::kSnappyCompression;
         options.compaction_style = rocksdb::kCompactionStyleLevel;
         //options.compaction_style = rocksdb::kCompactionStyleUniversal;
+
+        bool auto_tune = false;
+        if(auto_tune)
+        {
+           options.rate_limiter.reset(rocksdb::NewGenericRateLimiter(
+                                          1000*(1<<20),100*1000,10,
+                                          rocksdb::RateLimiter::Mode::kWritesOnly,true));
+
+
+
+        }
+
+
 
 
 
