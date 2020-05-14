@@ -6,6 +6,9 @@
 
 namespace ycsbc{
 
+uint64_t RocksDB::put_num = 0;
+uint64_t RocksDB::get_num = 0;
+
 RocksDB::RocksDB()
 {
 
@@ -56,6 +59,8 @@ RocksDB::RocksDB()
         options.create_if_missing = true;
         rocksdb::Status s = rocksdb::DB::Open(options ,kDBPath ,&db_);
         assert(s.ok());
+        if(pth == NULL)
+            pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
 }
 
@@ -71,6 +76,7 @@ int RocksDB::Read(const std::string &table, const std::string &key,
 			std::string value;
 			rocksdb::Status s = db_->Get(rocksdb::ReadOptions(), key, &value);
 			result.push_back(std::make_pair("", value));
+            RocksDB::get_num++;
 		return DB::kOK;
 	}
 
@@ -88,6 +94,7 @@ int RocksDB::Read(const std::string &table, const std::string &key,
                 iter->Next();
 			}
 			result.push_back(values);
+            RocksDB::get_num++;
 		return DB::kOK;
 	}
 
@@ -96,6 +103,7 @@ int RocksDB::Read(const std::string &table, const std::string &key,
 
         rocksdb::Status s = db_->Put(rocksdb::WriteOptions(),
                                      key, values[0].second);
+        RocksDB::put_num++;
         return DB::kOK;
     }
 
@@ -103,5 +111,32 @@ int RocksDB::Read(const std::string &table, const std::string &key,
     {
         rocksdb::Status s = db_->Delete(rocksdb::WriteOptions(),key);
         return DB::kOK;
+    }
+
+    void *RocksDB::BCC_BGWork(void *db)
+    {
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+        std::cout <<"BCC_BGWork is running~" <<std::endl;
+        uint64_t tmp_put_num = 0;
+        uint64_t tmp_get_num = 0;
+        uint64_t dlta_put_num = 0;
+        uint64_t dlta_get_num = 0;
+
+        double probe_time = 0.0;
+        Probe_Timer<double> probe_timer;
+        while(true)
+        {
+            probe_timer.Start();
+            tmp_put_num = RocksDB::put_num;
+            tmp_get_num = RocksDB::get_num;
+            sleep(5);//cyf add for sleep 5s
+            dlta_put_num = RocksDB::put_num - tmp_put_num;
+            dlta_get_num = RocksDB::get_num - tmp_get_num;
+            probe_time = probe_timer.End();
+
+            std::cout << "#_Transaction_throughput_(KTPS): \t"
+                <<(dlta_get_num + dlta_put_num) / probe_time / 1000
+               <<std::endl;
+        }
     }
 }
