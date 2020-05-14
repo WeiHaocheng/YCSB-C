@@ -71,6 +71,9 @@ class RocksDB : public DB {
 
   int Delete(const std::string &table, const std::string &key);
 
+  void Init(){std::cout<<"initial rocksdb......"<<std::endl;}
+  void Close(){std::cout<<"finished rocksdb......"<<std::endl;}
+
  private:
   rocksdb::DB * db_;
   pthread_t pth;
