@@ -11,7 +11,7 @@ uint64_t RocksDB::get_num = 0;
 
 RocksDB::RocksDB()
 {
-
+        pth = NULL;
         std::string kDBPath = "/mnt/ssd/ldb_2pc";
         rocksdb::Options options;
         options.target_file_size_base = 4 << 20;
