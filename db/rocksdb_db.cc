@@ -86,7 +86,7 @@ int RocksDB::Read(const std::string &table, const std::string &key,
 			std::vector<KVPair> values;
 			rocksdb::ReadOptions options;
 			options.tailing =false;
-			rocksdb::Iterator* iter = db_->NewIterator(options);
+            rocksdb::Iterator* iter = db_->NewIterator(rocksdb::ReadOptions());
 			iter->Seek(key);
 			for(size_t i = 0; i < len && iter->Valid(); i++) {
 				//values.push_back(iter->value().Encode());
