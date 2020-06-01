@@ -298,7 +298,12 @@ int main(const int argc, const char *argv[]) {
 
       std::cout << "# Transaction throughput (KTPS)" << endl;
       std::cout <<"Run_stage: "<< props_set[0]["dbname"] << '\t' << file_name << '\t' << num_threads << '\t'
-                << (props_set.size() * total_ops) / (duration * 1000) << endl;
+                << (props_set.size() * total_ops) / (duration * 1000) <<std::endl;
+
+       std::cout << "# Transaction average throughput(Load+Run) (KTPS)"
+                 << '\t' << file_name << '\t' << num_threads << '\t'
+                 <<((props_set.size() +1 )* total_ops) / ((duration+load_duration) * 1000)
+                 << endl;
 
       /*
        TOTAL_OPS_INCLUDE_LOAD_AND_RUN =
